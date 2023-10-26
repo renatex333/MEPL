@@ -45,29 +45,29 @@ Dive into MEPL and discover the unparalleled pleasure of "Black Tie Programming.
 ### Rule Definitions
 
 ```
-ELEGANT CONVERSATION    = GREETINGS, { SENTENCE } ;
-GREETING                = "Greetings", "." ; 
-SENTENCE                = ( λ | DECLARE | ASSIGN | CONDITIONAL | LOOP ) ;
-DECLARE                 = "I introduce", IDENTIFIER, "as", 
+Elegant Conversation    = Greeting, { Sentence } ;
+Greeting                = "Greetings", "." ; 
+Sentence                = ( λ | Declare | Assign | Conditional | Loop ) ;
+Declare                 = "I introduce", Identifier, "as", 
                           ("an integer" | "a string"), 
-                          [ "carrying the value of", BOOLEAN EXPRESSION ], "." ;
-ASSIGN                  = "Please, let", IDENTIFIER, 
-                          "be given the value of", BOOLEAN EXPRESSION, "." ;
-CONDITIONAL             = "In the event that", BOOLEAN EXPRESSION, "holds true:", 
-                          BLOCK, [ "Otherwise:", BLOCK ], "." ;
-LOOP                    = "Whilst", BOOLEAN EXPRESSION, "holds true:", BLOCK, "." ;
-BLOCK                   = "Firstly", { SENTENCE }, "... as a conclusion to the matter" ;
-BOOLEAN EXPRESSION      = BOOLEAN CLAUSE, { "or", BOOLEAN CLAUSE } ;
-BOOLEAN CLAUSE          = RELATIONAL EXPRESSION, { "and", RELATIONAL EXPRESSION } ;
-RELATIONAL EXPRESSION   = EXPRESSION, { ("equates to" | "exceeds" | "is less than"), EXPRESSION } ;
-EXPRESSION              = TERM, { ("added to" | "subtracted by" | "concatenated with"), TERM } ;
-TERM                    = FACTOR, { ("multiplied by" | "divided by"), FACTOR } ;
-FACTOR                  = NUMBER | STRING | IDENTIFIER | (("positively" | "negatively" | "not"), FACTOR) ;
-IDENTIFIER              = LETTER, { LETTER | DIGIT | "_" } ;
-NUMBER                  = DIGIT, { DIGIT } ;
-STRING                  = `"`, { λ | LETTER | DIGIT }, `"` ;
-LETTER                  = ( a | ... | z | A | ... | Z ) ;
-DIGIT                   = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 ) ;
+                          [ "carrying the value of", Boolean Expression ], "." ;
+Assign                  = "Please, let", Identifier, 
+                          "be given the value of", Boolean Expression, "." ;
+Conditional             = "In the event that", Boolean Expression, "holds true:", 
+                          Block, [ "Otherwise:", Block ], "." ;
+Loop                    = "Whilst", Boolean Expression, "holds true:", Block, "." ;
+Block                   = "Firstly", { Sentence }, "... as a conclusion to the matter" ;
+Boolean Expression      = Boolean Clause, { "or", Boolean Clause } ;
+Boolean Clause          = Relational Expression, { "and", Relational Expression } ;
+Relational Expression   = Expression, { ("equates to" | "exceeds" | "is less than"), Expression } ;
+Expression              = Term, { ("added to" | "subtracted by" | "concatenated with"), Term } ;
+Term                    = Factor, { ("multiplied by" | "divided by"), Factor } ;
+Factor                  = Number | String | Identifier | (("positively" | "negatively" | "not"), Factor) ;
+Identifier              = Letter, { Letter | Digit | "_" } ;
+Number                  = Digit, { Digit } ;
+String                  = `"`, { λ | Letter | Digit }, `"` ;
+Letter                  = ( a | ... | z | A | ... | Z ) ;
+Digit                   = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 ) ;
 ```
 
 ## References
