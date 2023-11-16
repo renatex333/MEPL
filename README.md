@@ -54,9 +54,9 @@ Declare                 = "I introduce", Identifier, "as",
 Assign                  = "Please, let", Identifier, 
                           "be given the value of", Boolean Expression, "." ;
 Conditional             = "In the event that", Boolean Expression, "holds true:", 
-                          Block, [ "Otherwise:", Block ], "." ;
-Loop                    = "Whilst", Boolean Expression, "holds true:", Block, "." ;
-Block                   = "Firstly", { Sentence }, "... as a conclusion to the matter" ;
+                          Block, [ "Otherwise:", Block ] ;
+Loop                    = "Whilst", Boolean Expression, "holds true:", Block ;
+Block                   = "Firstly,", { Sentence }, "... as a conclusion to the matter", "." ;
 Boolean Expression      = Boolean Clause, { "or", Boolean Clause } ;
 Boolean Clause          = Relational Expression, { "and", Relational Expression } ;
 Relational Expression   = Expression, { ("equates to" | "exceeds" | "is less than"), Expression } ;
@@ -65,10 +65,10 @@ Term                    = Factor, { ("multiplied by" | "divided by"), Factor } ;
 Factor                  = Number | String | Identifier | (("positively" | "negatively" | "not"), Factor) ;
 Identifier              = Letter, { Letter | Digit | "_" } ;
 Number                  = Digit, { Digit } ;
-String                  = `"`, { λ | Letter | Digit }, `"` ;
+String                  = `"`, { λ | Letter | Digit | Special Character }, `"` ;
 Letter                  = ( a | ... | z | A | ... | Z ) ;
 Digit                   = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 ) ;
-```
+Special Character       = ( @ | # | $ | % | ^ | & | * | ( | ) | _ | + | { | } | [ | ] | | | \ | : | ; | ' | < | > | , | . | ? | / | ! | ? | - | ~ ) ;
 
 ## References
 
