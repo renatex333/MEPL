@@ -1,5 +1,5 @@
 %{
-#include "elegant_parser.tab.h"
+#include "../parser/elegant_parser.tab.h"
 %}
 
 
