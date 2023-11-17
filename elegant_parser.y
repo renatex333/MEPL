@@ -4,6 +4,7 @@
 
     void yyerror(const char *s);
     extern int yylex(void);
+    extern char *yytext; 
 %}
 
 %token T_GREETINGS T_INTRODUCE T_AS T_INTEGER_TYPE T_STRING_TYPE
@@ -84,10 +85,13 @@ UnaryOp: T_POSITIVELY
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error: %s\n", s);
+    extern int yylval;   // Token value
+    fprintf(stderr, "Error near token '%s': %s\n", yytext, s);
 }
 
 int main(void) {
+    extern int yy_flex_debug;
+    yy_flex_debug = 1;
     if (yyparse()) {
         printf("Error in parsing!\n");
         return 1;
