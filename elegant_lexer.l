@@ -33,7 +33,7 @@
 "not"                           { return T_NOT; }
 [a-zA-Z_][a-zA-Z_0-9]*          { return T_IDENTIFIER; }
 \"([^\\\"]|\\(.|\n)|[@#$%^&*()_+{}[\]|:;'<>,.?/!~-])*\" { return T_STRING; }
-[0-9]+[ ]                       { return T_NUMBER; }
+[0-9]+                          { return T_NUMBER; }
 "."                             { return T_NEW_SENTENCE; }
 \n                              { /* handle new lines */ }
 [ \t\r]+                        { /* ignore extra whitespace */ }
