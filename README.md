@@ -47,7 +47,7 @@ Dive into MEPL and discover the unparalleled pleasure of "Black Tie Programming.
 ```
 Elegant Conversation    = Greeting, { Sentence } ;
 Greeting                = "Greetings", "." ; 
-Sentence                = ( λ | Declare | Assign | Conditional | Loop ) ;
+Sentence                = ( λ | Declare | Assign | Conditional | Loop | Inquire | Display) ;
 Declare                 = "I introduce", Identifier, "as", 
                           ("an integer" | "a string"), 
                           [ "carrying the value of", Boolean Expression ], "." ;
@@ -56,6 +56,8 @@ Assign                  = "Please, let", Identifier,
 Conditional             = "In the event that", Boolean Expression, "holds true:", 
                           Block, [ "Otherwise:", Block ] ;
 Loop                    = "Whilst", Boolean Expression, "holds true:", Block ;
+Inquire                 = "May I inquire a brand new value for", Identifier, "." ;
+Display                 = "Kindly display the following expression:", Boolean Expression, "." ;
 Block                   = "Firstly,", { Sentence }, "... as a conclusion to the matter", "." ;
 Boolean Expression      = Boolean Clause, { "or", Boolean Clause } ;
 Boolean Clause          = Relational Expression, { "and", Relational Expression } ;

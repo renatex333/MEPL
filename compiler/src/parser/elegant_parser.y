@@ -9,7 +9,7 @@
 
 %token T_GREETINGS T_INTRODUCE T_AS T_INTEGER_TYPE T_STRING_TYPE
 %token T_DECLARE_VALUE T_ASSIGN T_ASSIGN_VALUE T_CONDITIONAL T_HOLDS_TRUE
-%token T_OTHERWISE T_WHILST T_FIRSTLY T_CONCLUSION T_OR
+%token T_OTHERWISE T_WHILST T_INQUIRE T_DISPLAY T_FIRSTLY T_CONCLUSION T_OR
 %token T_AND T_EQUIVALENCE T_GREATER T_LESSER T_ADDITION
 %token T_SUBTRACTION T_CONCATENATION T_MULTIPLICATION T_DIVISON T_POSITIVELY
 %token T_NEGATIVELY T_NOT T_IDENTIFIER T_STRING T_NUMBER T_NEW_SENTENCE
@@ -26,7 +26,9 @@ SentenceList: /* empty */
 Sentence:  Declare
         | Assign
         | Conditional
-        | Loop ;
+        | Loop 
+        | Inquire
+        | Display ;
 
 Declare: T_INTRODUCE T_IDENTIFIER T_AS Type OptionalValue T_NEW_SENTENCE ;
 
@@ -44,6 +46,10 @@ OptionalElse: /* empty */
             | T_OTHERWISE Block ;
 
 Loop: T_WHILST BooleanExpression T_HOLDS_TRUE Block ;
+
+Inquire: T_INQUIRE T_IDENTIFIER T_NEW_SENTENCE ;
+
+Display: T_DISPLAY BooleanExpression T_NEW_SENTENCE ;
 
 Block: T_FIRSTLY SentenceList T_CONCLUSION T_NEW_SENTENCE ;
 
