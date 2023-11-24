@@ -2100,16 +2100,15 @@ int main(int argc, char *argv[]) {
     PyTuple_SetItem(pArgs, 0, pFilename);
     PyObject *pCodeGenerator = create_instance("compiler.src.codegen.CodeGenerator", "CodeGen", pArgs);
     Py_DECREF(pArgs);
-
-    PyObject_CallMethod(pCodeGenerator, "start", NULL);
     
     if (yyparse() == 0 && pRootNode != NULL) {
         PyObject_CallMethod(pRootNode, "evaluate", "OO", pSymbolTable, pCodeGenerator);
     } else {
         printf("Error in parsing!\n");
+        return 1;
     }
 
-    PyObject_CallMethod(pCodeGenerator, "finish", NULL);
+    PyObject_CallMethod(pCodeGenerator, "create_file", NULL);
 
     Py_XDECREF(pRootNode);
     Py_XDECREF(pSymbolTable);
