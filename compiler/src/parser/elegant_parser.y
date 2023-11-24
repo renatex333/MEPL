@@ -14,8 +14,9 @@ PyObject *pRootNode = NULL;
 
 PyObject *create_ast_node(const char *node_type, PyObject *args) {
     static PyObject *pModule = NULL;
+    PyObject *pName = PyUnicode_FromString("compiler.src.semantic.AbstractSyntaxTreeNodes");
     if (!pModule) {
-        pModule = PyImport_Import(PyUnicode_DecodeFSDefault("AbstractSyntaxTreeNodes"));
+        pModule = PyImport_Import(pName);
         if (!pModule) {
             PyErr_Print();
             fprintf(stderr, "Failed to load 'AbstractSyntaxTreeNodes' module\n");
@@ -113,6 +114,7 @@ Declare: T_INTRODUCE Identifier T_AS Type OptionalValue T_NEW_SENTENCE  {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
@@ -129,6 +131,7 @@ Identifier: T_IDENTIFIER    {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
@@ -148,7 +151,7 @@ OptionalValue: /* empty */  {
 
 Assign: T_ASSIGN Identifier T_ASSIGN_VALUE BooleanExpression T_NEW_SENTENCE {
     PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("=");
+    PyObject *pValue = PyUnicode_FromString("ElegantAssignment");
     PyObject *pChildren = PyList_New(0);
 
     PyList_Append(pChildren, $2);
@@ -162,12 +165,13 @@ Assign: T_ASSIGN Identifier T_ASSIGN_VALUE BooleanExpression T_NEW_SENTENCE {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
 Conditional: T_CONDITIONAL BooleanExpression T_HOLDS_TRUE Block OptionalElse    {
     PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("If");
+    PyObject *pValue = PyUnicode_FromString("ElegantConditional");
     PyObject *pChildren = PyList_New(0);
 
     PyList_Append(pChildren, $2);
@@ -184,6 +188,7 @@ Conditional: T_CONDITIONAL BooleanExpression T_HOLDS_TRUE Block OptionalElse    
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
@@ -196,7 +201,7 @@ OptionalElse: /* empty */   {
 
 Loop: T_WHILST BooleanExpression T_HOLDS_TRUE Block {
     PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("While");
+    PyObject *pValue = PyUnicode_FromString("ElegantLoop");
     PyObject *pChildren = PyList_New(0);
 
     PyList_Append(pChildren, $2);
@@ -210,12 +215,13 @@ Loop: T_WHILST BooleanExpression T_HOLDS_TRUE Block {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
 Solicit: T_SOLICITATION Identifier T_NEW_SENTENCE   {
     PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("Scan");
+    PyObject *pValue = PyUnicode_FromString("ElegantSolicitation");
     PyObject *pChildren = PyList_New(0);
 
     PyList_Append(pChildren, $2);
@@ -228,12 +234,13 @@ Solicit: T_SOLICITATION Identifier T_NEW_SENTENCE   {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
 Display: T_DISPLAY BooleanExpression T_NEW_SENTENCE {
     PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("Print");
+    PyObject *pValue = PyUnicode_FromString("ElegantDisplay");
     PyObject *pChildren = PyList_New(0);
 
     PyList_Append(pChildren, $2);
@@ -246,66 +253,182 @@ Display: T_DISPLAY BooleanExpression T_NEW_SENTENCE {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 };
 
-Block: T_FIRSTLY BlockSentenceList T_NEW_SENTENCE   {
+Block: T_FIRSTLY BlockSentenceList T_CONCLUSION T_NEW_SENTENCE   {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantBlock");
 
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, $2);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantBlock", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pArgsTuple);
 };
 
-BlockSentenceList: BlockSentenceList Sentence {
+BlockSentenceList:  /* empty */ {
+    $$ = PyList_New(0); // Base case: an empty list
+}
+            | BlockSentenceList Sentence {
     if (!PyList_Check($1)) {
         yyerror("Expected a list as the first argument");
         $$ = NULL;
     } else {
         PyList_Append($1, $2);
+        $$ = $1;    // Assign the modified list back to $$
     }
-}
-            | Sentence T_CONCLUSION {
-    PyObject *singleSentenceList = PyList_New(1);
-    PyList_SetItem(singleSentenceList, 0, $1); // $1 refers to the single Sentence node
-    $$ = singleSentenceList;
-}
-            | T_CONCLUSION {
-    $$ = PyList_New(0); // Base case: an empty list
 };
 
 BooleanExpression: BooleanClause    {
     $$ = $1;
 }
-                | BooleanExpression T_OR BooleanClause  ;
+                | BooleanExpression T_OR BooleanClause  {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("or");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, $1);
+    PyList_Append(pChildren, $3);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+};
 
 BooleanClause: RelationalExpression {
     $$ = $1;
 }
-            | BooleanClause T_AND RelationalExpression ;
+            | BooleanClause T_AND RelationalExpression  {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("and");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, $1);
+    PyList_Append(pChildren, $3);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+};
 
 RelationalExpression: Expression    {
     $$ = $1;
 }
-                    | RelationalExpression RelationalOp Expression;
+                    | RelationalExpression RelationalOp Expression  {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = $2;
+    PyObject *pChildren = PyList_New(0);
 
-RelationalOp: T_EQUIVALENCE 
-            | T_DIFFERENCE
-            | T_GREATER 
-            | T_LESSER ;
+    PyList_Append(pChildren, $1);
+    PyList_Append(pChildren, $3);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+};
+
+RelationalOp: T_EQUIVALENCE {
+    $$ = PyUnicode_FromString(yytext); 
+}
+            | T_DIFFERENCE  {
+    $$ = PyUnicode_FromString(yytext); 
+}
+            | T_GREATER     {
+    $$ = PyUnicode_FromString(yytext); 
+}
+            | T_LESSER      {
+    $$ = PyUnicode_FromString(yytext); 
+};
 
 Expression: Term    {
     $$ = $1;
 } 
-          | Expression ArithmeticAddSubConcatOp Term ;
+          | Expression ArithmeticAddSubConcatOp Term    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = $2;
+    PyObject *pChildren = PyList_New(0);
 
-ArithmeticAddSubConcatOp: T_ADDITION 
-                        | T_SUBTRACTION
-                        | T_CONCATENATION ;
+    PyList_Append(pChildren, $1);
+    PyList_Append(pChildren, $3);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+};
+
+ArithmeticAddSubConcatOp: T_ADDITION    {
+    $$ = PyUnicode_FromString(yytext); 
+}
+                        | T_SUBTRACTION {
+    $$ = PyUnicode_FromString(yytext); 
+}
+                        | T_CONCATENATION   {
+    $$ = PyUnicode_FromString(yytext); 
+};
 
 Term: Factor    {
     $$ = $1;
 } 
-    | Term ArithmeticMultDivOp Factor ;
+    | Term ArithmeticMultDivOp Factor   {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = $2;
+    PyObject *pChildren = PyList_New(0);
 
-ArithmeticMultDivOp: T_MULTIPLICATION 
-                   | T_DIVISON ;
+    PyList_Append(pChildren, $1);
+    PyList_Append(pChildren, $3);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+};
+
+ArithmeticMultDivOp: T_MULTIPLICATION   {
+    $$ = PyUnicode_FromString(yytext); 
+}
+                   | T_DIVISON  {
+    $$ = PyUnicode_FromString(yytext); 
+};
 
 Factor: T_NUMBER    {
     PyObject *pArgsList = PyList_New(0);
@@ -320,20 +443,58 @@ Factor: T_NUMBER    {
     
     Py_DECREF(pArgsList);
     Py_DECREF(pValue);
+    Py_DECREF(pChildren);
     Py_DECREF(pArgsTuple);
 }
-      | T_STRING
-      | Identifier 
-      | UnaryOp Factor ;
+      | T_STRING    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString(yytext);
+    PyObject *pChildren = PyList_New(0);
 
-UnaryOp: T_POSITIVELY 
-       | T_NEGATIVELY 
-       | T_NOT ;
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantStringValue", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+      | UnaryOp Factor  {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = $1;
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, $2);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    $$ = create_ast_node("ElegantUnaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+      | Identifier ;
+
+UnaryOp: T_POSITIVELY   {
+    $$ = PyUnicode_FromString(yytext); 
+}
+       | T_NEGATIVELY   {
+    $$ = PyUnicode_FromString(yytext); 
+}
+       | T_NOT  {
+    $$ = PyUnicode_FromString(yytext); 
+};
 
 %%
 
 void yyerror(const char *s) {
-    extern YYSTYPE yylval;
     fprintf(stderr, "Error near token '%s': %s\n", yytext, s);
 }
 
