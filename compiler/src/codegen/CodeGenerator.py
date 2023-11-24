@@ -1,8 +1,10 @@
+MAX_STR_SIZE = 64
+
 class CodeGen():
     def __init__(self, filename: str):
         self.filename = filename.replace(".mepl", ".asm")
-        self.asm_header =   """
-; constantes
+        self.asm_constants =   """
+; constants
 SYS_EXIT equ 1
 SYS_READ equ 3
 SYS_WRITE equ 4
@@ -10,22 +12,29 @@ STDIN equ 0
 STDOUT equ 1
 True equ 1
 False equ 0
-
+"""
+        self.asm_data =   """
 segment .data
 formatin: db "%d", 0
 formatout: db "%d", 10, 0 ; newline, null terminator
+formatinstr: db "%s", 0
+formatoutstr: db "%s", 10, 0 ; newline, null terminator
 scanint: times 4 db 0 ; 32-bit integer = 4 bytes
-
+"""
+        self.asm_bss =   f"""
 segment .bss ; variables
 res RESB 1
 extern fflush
 extern stdout
-
+string_buffer RESB {MAX_STR_SIZE}
+"""
+        self.asm_text =   """
 section .text
 global main ; linux
 extern scanf ; linux
 extern printf ; linux
-
+"""
+        self.asm_subrotines =   """
 ; subrotines if/while
 binop_je:
     JE binop_true
@@ -46,7 +55,8 @@ binop_true:
     MOV EAX, True
 binop_exit:
     RET
-
+"""
+        self.asm_main =   """
 main:
     PUSH EBP ; stores the base pointer
     MOV EBP, ESP ; stabilishes a new base pointer
@@ -66,17 +76,30 @@ main:
 """
         self.indent = 1
 
-    def start(self):
+    def create_file(self):
         with open(self.filename, "w") as file:
-            file.write(self.asm_header)
-    
-    def write_line(self, line: str):
-        with open(self.filename, "a") as file:
-            file.write(self.indent*"\t" + line + "\n")
+            file.write(self.asm_constants + self.asm_data + self.asm_bss + self.asm_text + self.asm_subrotines + self.asm_main + self.asm_footer)
 
-    def finish(self):
-        with open(self.filename, "a") as file:
-            file.write(self.asm_footer)
+    def write_constants(self, line: str):
+        self.asm_constants += self.indent*"\t" + line + "\n"
+
+    def write_data(self, line: str):
+        self.asm_data += self.indent*"\t" + line + "\n"
+
+    def write_bss(self, line: str):
+        self.asm_bss += self.indent*"\t" + line + "\n"
+
+    def write_text(self, line: str):
+        self.asm_text += self.indent*"\t" + line + "\n"
+
+    def write_subrotines(self, line: str):
+        self.asm_subrotines += self.indent*"\t" + line + "\n"
+    
+    def write_main(self, line: str):
+        self.asm_main += self.indent*"\t" + line + "\n"
+
+    def write_footer(self, line: str):
+        self.asm_footer += self.indent*"\t" + line + "\n"
 
     def indent_up(self):
         self.indent += 1
