@@ -103,7 +103,15 @@ In the event of making alterations to the foundational elements of MEPL - the le
 
     ./elegant_builder
 
+
 This step ensures that any modifications you have graciously added to these core components are reflected in the subsequent compilations.
+
+### Quick Reference to Shell Scripts
+
+Should there arise a need to elegantly wrap the shell scripts in a binary format following any modification, execute in your terminal:
+
+    shc -o elegant_builder -f compiler/src/scripts/builder.sh 
+    shc -o elegant_compiler -f compiler/src/scripts/compiler.sh
 
 ## References
 
