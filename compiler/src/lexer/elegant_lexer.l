@@ -2,6 +2,8 @@
 #include "../parser/elegant_parser.tab.h"
 %}
 
+%option noinput
+%option nounput
 
 %%
 "Greetings"                                                 { return T_GREETINGS; }
@@ -16,17 +18,18 @@
 "holds true:"                                               { return T_HOLDS_TRUE; }
 "Otherwise:"                                                { return T_OTHERWISE; }
 "Whilst"                                                    { return T_WHILST; }
-"May I inquire a brand new value for"                       { return T_INQUIRE; }
+"May I solicit a brand new value for"                       { return T_SOLICITATION; }
 "Kindly display the following expression:"                  { return T_DISPLAY; }
 "Firstly,"                                                  { return T_FIRSTLY; }
 "... as a conclusion to the matter"                         { return T_CONCLUSION; }
 "or"                                                        { return T_OR; }
 "and"                                                       { return T_AND; }
 "equates to"                                                { return T_EQUIVALENCE; }
+"differs from"                                              { return T_DIFFERENCE; }
 "exceeds"                                                   { return T_GREATER; }
 "is less than"                                              { return T_LESSER; }
 "added to"                                                  { return T_ADDITION; }
-"subtracted by"                                             { return T_SUBTRACTION; }
+"subtracted from"                                           { return T_SUBTRACTION; }
 "concatenated with"                                         { return T_CONCATENATION; }
 "multiplied by"                                             { return T_MULTIPLICATION; }
 "divided by"                                                { return T_DIVISON; }
