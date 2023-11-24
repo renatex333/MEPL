@@ -74,6 +74,37 @@ Special Character       = ( @ | # | $ | % | ^ | & | * | ( | ) | _ | + | { | } | 
                           | ; | ' | < | > | , | . | ? | / | ! | ? | - | ~ ) ;
 ```
 
+## Current Constraints and Forthcoming Refinements
+
+### Elegantly Crafted for Specific Environments
+
+At present, the MEPL language is meticulously tailored for the Linux Operating System, exclusively flourishing within the realms of x86-64 architectures. This precise crafting ensures a harmonious and refined interaction with the said environment, providing an exquisite coding experience.
+
+### Current Limitations in String Operations
+
+In the current stage of MEPL's evolution, certain string operations — specifically, concatenation, equivalence, and difference — remain a work in artful progress. Attempts to employ these functionalities may lead to a momentary lapse in the otherwise smooth execution of elegantly composed code. It is a deliberate design decision that arithmetic operations (sum, subtraction, multiplication, division) and boolean operations (such as 'or' and 'and') between strings will not be implemented, as they do not align with the intrinsic elegance upheld in MEPL. The operations of "solicitations" (the term for scanning) and "displays" (printing) with strings, however, are functioning with utmost grace and efficiency, as intended.
+
+## Instructions
+
+### Compiling MEPL Code
+
+To bring your MEPL creations to life, follow these graceful steps:
+
+1. Craft Your Code: Pen down your MEPL code in a file with the **.mepl** extension.
+1. Compile: To transmute your written code into an executable form, simply run in your terminal:
+
+        ./elegant_compiler <filename>
+
+Replacing `<filename>` with the name of your **.mepl** file.
+
+### Rebuilding the Compiler
+
+In the event of making alterations to the foundational elements of MEPL - the lexer, parser, semantic analyzer, or code generator - a reconstruction of the compiler is essential. This ensures that your changes are effectively integrated. To rebuild the compiler execute in your terminal:
+
+    ./elegant_builder
+
+This step ensures that any modifications you have graciously added to these core components are reflected in the subsequent compilations.
+
 ## References
 
 Aaron Myles Landwehr. (2012). [Flex/Bison Tutorial](https://www.capsl.udel.edu/courses/cpeg421/2012/slides/Tutorial-Flex_Bison.pdf).
@@ -87,3 +118,5 @@ Wilfred Hughes. (2014). [Baby Steps to a C Compiler](https://www.wilfred.me.uk/b
 Continuum Analytics. (2012). [LLVMPY](https://www.llvmpy.org/).
 
 Python. (2023). [Full Grammar specification](https://docs.python.org/3/reference/grammar.html).
+
+IME-USP. (1999). [The Netwide Assembler: NASM](https://www.ime.usp.br/~reverbel/mac211-99/asm/nasm_doc/nasmdoca.html).
