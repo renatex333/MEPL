@@ -66,25 +66,28 @@ extern int yydebug;
     T_HOLDS_TRUE = 267,            /* T_HOLDS_TRUE  */
     T_OTHERWISE = 268,             /* T_OTHERWISE  */
     T_WHILST = 269,                /* T_WHILST  */
-    T_FIRSTLY = 270,               /* T_FIRSTLY  */
-    T_CONCLUSION = 271,            /* T_CONCLUSION  */
-    T_OR = 272,                    /* T_OR  */
-    T_AND = 273,                   /* T_AND  */
-    T_EQUIVALENCE = 274,           /* T_EQUIVALENCE  */
-    T_GREATER = 275,               /* T_GREATER  */
-    T_LESSER = 276,                /* T_LESSER  */
-    T_ADDITION = 277,              /* T_ADDITION  */
-    T_SUBTRACTION = 278,           /* T_SUBTRACTION  */
-    T_CONCATENATION = 279,         /* T_CONCATENATION  */
-    T_MULTIPLICATION = 280,        /* T_MULTIPLICATION  */
-    T_DIVISON = 281,               /* T_DIVISON  */
-    T_POSITIVELY = 282,            /* T_POSITIVELY  */
-    T_NEGATIVELY = 283,            /* T_NEGATIVELY  */
-    T_NOT = 284,                   /* T_NOT  */
-    T_IDENTIFIER = 285,            /* T_IDENTIFIER  */
-    T_STRING = 286,                /* T_STRING  */
-    T_NUMBER = 287,                /* T_NUMBER  */
-    T_NEW_SENTENCE = 288           /* T_NEW_SENTENCE  */
+    T_SOLICITATION = 270,          /* T_SOLICITATION  */
+    T_DISPLAY = 271,               /* T_DISPLAY  */
+    T_FIRSTLY = 272,               /* T_FIRSTLY  */
+    T_CONCLUSION = 273,            /* T_CONCLUSION  */
+    T_OR = 274,                    /* T_OR  */
+    T_AND = 275,                   /* T_AND  */
+    T_EQUIVALENCE = 276,           /* T_EQUIVALENCE  */
+    T_DIFFERENCE = 277,            /* T_DIFFERENCE  */
+    T_GREATER = 278,               /* T_GREATER  */
+    T_LESSER = 279,                /* T_LESSER  */
+    T_ADDITION = 280,              /* T_ADDITION  */
+    T_SUBTRACTION = 281,           /* T_SUBTRACTION  */
+    T_CONCATENATION = 282,         /* T_CONCATENATION  */
+    T_MULTIPLICATION = 283,        /* T_MULTIPLICATION  */
+    T_DIVISON = 284,               /* T_DIVISON  */
+    T_POSITIVELY = 285,            /* T_POSITIVELY  */
+    T_NEGATIVELY = 286,            /* T_NEGATIVELY  */
+    T_NOT = 287,                   /* T_NOT  */
+    T_IDENTIFIER = 288,            /* T_IDENTIFIER  */
+    T_STRING = 289,                /* T_STRING  */
+    T_NUMBER = 290,                /* T_NUMBER  */
+    T_NEW_SENTENCE = 291           /* T_NEW_SENTENCE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif

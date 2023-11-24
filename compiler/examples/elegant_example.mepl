@@ -1,21 +1,43 @@
-Greetings. 
-I introduce x as an integer carrying the value of 5.
+Greetings.
+I introduce x as an integer.
 I introduce y as an integer carrying the value of 7.
-I introduce hello as a string.
-In the event that x added to y exceeds 10 holds true:
+I introduce number_of_tries as an integer.
+Kindly display the following expression: "Welcome to my number guessing game!".
+Kindly display the following expression: "How many tries do you want?".
+May I solicit a brand new value for number_of_tries.
+I introduce current_attempt as an integer carrying the value of 0.
+Please, let x be given the value of 0.
+Whilst x differs from y and number_of_tries differs from current_attempt holds true:
 Firstly,
-    Please, let x be given the value of 1 added to 1.
-    Please, let y be given the value of 2 added to 2.
-    Please, let hello be given the value of "world!".
+    Kindly display the following expression: "Choose a number:".
+    May I solicit a brand new value for x.
+    In the event that x equates to y holds true:
+    Firstly,
+        Kindly display the following expression: "Excellent selection!".
+    ... as a conclusion to the matter.
+    In the event that x exceeds y holds true:
+    Firstly,
+        Kindly display the following expression: "Perhaps try aiming a bit lower.".
+        Please, let current_attempt be given the value of current_attempt added to 1.
+    ... as a conclusion to the matter.
+    In the event that x is less than y holds true:
+    Firstly,
+        Kindly display the following expression: "Maybe aim a bit higher.".
+        Please, let current_attempt be given the value of current_attempt added to 1.
+    ... as a conclusion to the matter.
+... as a conclusion to the matter.
+In the event that x differs from y holds true:
+Firstly,
+    Kindly display the following expression: "Sorry to inform, but your reservoir of attempts has reached its end.".
+    Kindly display the following expression: "Let us tally up to the number that awaited unveiling!".
+    I introduce count as an integer carrying the value of 0.
+    Whilst count is less than y holds true:
+    Firstly,
+        Please, let count be given the value of count added to 1.
+        Kindly display the following expression: count.
+    ... as a conclusion to the matter.
 ... as a conclusion to the matter.
 Otherwise:
 Firstly,
-    Please, let x be given the value of 5 added to 5.
-    Please, let y be given the value of 10 added to 10.
-    Please, let hello be given the value of "earth!".
-... as a conclusion to the matter.
-I introduce index as an integer carrying the value of 0.
-Whilst index is less than 10 holds true:
-Firstly,
-    Please, let index be given the value of index added to 1.
+    Kindly display the following expression: "Congratulations for unveiling the secret number!".
 ... as a conclusion to the matter.

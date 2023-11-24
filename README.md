@@ -47,7 +47,7 @@ Dive into MEPL and discover the unparalleled pleasure of "Black Tie Programming.
 ```
 Elegant Conversation    = Greeting, { Sentence } ;
 Greeting                = "Greetings", "." ; 
-Sentence                = ( λ | Declare | Assign | Conditional | Loop ) ;
+Sentence                = ( Declare | Assign | Conditional | Loop | Solicitation | Display) ;
 Declare                 = "I introduce", Identifier, "as", 
                           ("an integer" | "a string"), 
                           [ "carrying the value of", Boolean Expression ], "." ;
@@ -56,11 +56,13 @@ Assign                  = "Please, let", Identifier,
 Conditional             = "In the event that", Boolean Expression, "holds true:", 
                           Block, [ "Otherwise:", Block ] ;
 Loop                    = "Whilst", Boolean Expression, "holds true:", Block ;
+Solicitation            = "May I solicit a brand new value for", Identifier, "." ;
+Display                 = "Kindly display the following expression:", Boolean Expression, "." ;
 Block                   = "Firstly,", { Sentence }, "... as a conclusion to the matter", "." ;
 Boolean Expression      = Boolean Clause, { "or", Boolean Clause } ;
 Boolean Clause          = Relational Expression, { "and", Relational Expression } ;
-Relational Expression   = Expression, { ("equates to" | "exceeds" | "is less than"), Expression } ;
-Expression              = Term, { ("added to" | "subtracted by" | "concatenated with"), Term } ;
+Relational Expression   = Expression, { ("equates to" | "differs from" | "exceeds" | "is less than"), Expression } ;
+Expression              = Term, { ("added to" | "subtracted from" | "concatenated with" ), Term } ;
 Term                    = Factor, { ("multiplied by" | "divided by"), Factor } ;
 Factor                  = Number | String | Identifier | (("positively" | "negatively" | "not"), Factor) ;
 Identifier              = Letter, { Letter | Digit | "_" } ;
@@ -68,8 +70,48 @@ Number                  = Digit, { Digit } ;
 String                  = `"`, { λ | Letter | Digit | Special Character }, `"` ;
 Letter                  = ( a | ... | z | A | ... | Z ) ;
 Digit                   = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 ) ;
-Special Character       = ( @ | # | $ | % | ^ | & | * | ( | ) | _ | + | { | } | [ | ] | | | \ | : | ; | ' | < | > | , | . | ? | / | ! | ? | - | ~ ) ;
+Special Character       = ( @ | # | $ | % | ^ | & | * | ( | ) | _ | + | { | } | [ | ] | | | \ | : 
+                          | ; | ' | < | > | , | . | ? | / | ! | ? | - | ~ ) ;
 ```
+
+## Current Constraints and Forthcoming Refinements
+
+### Elegantly Crafted for Specific Environments
+
+At present, the MEPL language is meticulously tailored for the Linux Operating System, exclusively flourishing within the realms of x86-64 architectures. This precise crafting ensures a harmonious and refined interaction with the said environment, providing an exquisite coding experience.
+
+### Current Limitations in String Operations
+
+In the current stage of MEPL's evolution, certain string operations — specifically, concatenation, equivalence, and difference — remain a work in artful progress. Attempts to employ these functionalities may lead to a momentary lapse in the otherwise smooth execution of elegantly composed code. It is a deliberate design decision that arithmetic operations (sum, subtraction, multiplication, division) and boolean operations (such as 'or' and 'and') between strings will not be implemented, as they do not align with the intrinsic elegance upheld in MEPL. The operations of "solicitations" (the term for scanning) and "displays" (printing) with strings, however, are functioning with utmost grace and efficiency, as intended.
+
+## Instructions
+
+### Compiling MEPL Code
+
+To bring your MEPL creations to life, follow these graceful steps:
+
+1. Craft Your Code: Pen down your MEPL code in a file with the **.mepl** extension.
+1. Compile: To transmute your written code into an executable form, simply run in your terminal:
+
+        ./elegant_compiler <filename>
+
+Replacing `<filename>` with the name of your **.mepl** file.
+
+### Rebuilding the Compiler
+
+In the event of making alterations to the foundational elements of MEPL - the lexer, parser, semantic analyzer, or code generator - a reconstruction of the compiler is essential. This ensures that your changes are effectively integrated. To rebuild the compiler execute in your terminal:
+
+    ./elegant_builder
+
+
+This step ensures that any modifications you have graciously added to these core components are reflected in the subsequent compilations.
+
+### Quick Reference to Shell Scripts
+
+Should there arise a need to elegantly wrap the shell scripts in a binary format following any modification, execute in your terminal:
+
+    shc -o elegant_builder -f compiler/src/scripts/builder.sh 
+    shc -o elegant_compiler -f compiler/src/scripts/compiler.sh
 
 ## References
 
@@ -84,3 +126,5 @@ Wilfred Hughes. (2014). [Baby Steps to a C Compiler](https://www.wilfred.me.uk/b
 Continuum Analytics. (2012). [LLVMPY](https://www.llvmpy.org/).
 
 Python. (2023). [Full Grammar specification](https://docs.python.org/3/reference/grammar.html).
+
+IME-USP. (1999). [The Netwide Assembler: NASM](https://www.ime.usp.br/~reverbel/mac211-99/asm/nasm_doc/nasmdoca.html).

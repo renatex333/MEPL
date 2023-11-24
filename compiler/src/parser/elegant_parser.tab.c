@@ -69,14 +69,53 @@
 /* First part of user prologue.  */
 #line 1 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
 
-    #include <stdio.h>
-    #include <stdlib.h>
+#define YYSTYPE PyObject *
 
-    void yyerror(const char *s);
-    extern int yylex(void);
-    extern char *yytext; 
+#include <stdio.h>
+#include <stdlib.h>
+#include <Python.h>
 
-#line 80 "elegant_parser.tab.c"
+void yyerror(const char *s);
+extern int yylex(void);
+extern char *yytext;
+extern FILE *yyin;
+
+PyObject *pRootNode = NULL;
+
+PyObject *create_ast_node(const char *node_type, PyObject *args) {
+    static PyObject *pModule = NULL;
+    PyObject *pName = PyUnicode_FromString("compiler.src.semantic.AbstractSyntaxTreeNodes");
+    if (!pModule) {
+        pModule = PyImport_Import(pName);
+        if (!pModule) {
+            PyErr_Print();
+            fprintf(stderr, "Failed to load 'AbstractSyntaxTreeNodes' module\n");
+            return NULL;
+        }
+    }
+
+    PyObject *pClass = PyObject_GetAttrString(pModule, node_type);
+    if (!pClass || !PyCallable_Check(pClass)) {
+        if (PyErr_Occurred())
+            PyErr_Print();
+        fprintf(stderr, "Failed to find class '%s'\n", node_type);
+        Py_XDECREF(pClass);
+        return NULL;
+    }
+
+    PyObject *pInstance = PyObject_CallObject(pClass, args);
+    Py_DECREF(pClass);
+    if (!pInstance) {
+        PyErr_Print();
+        fprintf(stderr, "Failed to create instance of '%s'\n", node_type);
+        return NULL;
+    }
+
+    return pInstance;
+}
+
+
+#line 119 "elegant_parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -119,48 +158,55 @@ enum yysymbol_kind_t
   YYSYMBOL_T_HOLDS_TRUE = 12,              /* T_HOLDS_TRUE  */
   YYSYMBOL_T_OTHERWISE = 13,               /* T_OTHERWISE  */
   YYSYMBOL_T_WHILST = 14,                  /* T_WHILST  */
-  YYSYMBOL_T_FIRSTLY = 15,                 /* T_FIRSTLY  */
-  YYSYMBOL_T_CONCLUSION = 16,              /* T_CONCLUSION  */
-  YYSYMBOL_T_OR = 17,                      /* T_OR  */
-  YYSYMBOL_T_AND = 18,                     /* T_AND  */
-  YYSYMBOL_T_EQUIVALENCE = 19,             /* T_EQUIVALENCE  */
-  YYSYMBOL_T_GREATER = 20,                 /* T_GREATER  */
-  YYSYMBOL_T_LESSER = 21,                  /* T_LESSER  */
-  YYSYMBOL_T_ADDITION = 22,                /* T_ADDITION  */
-  YYSYMBOL_T_SUBTRACTION = 23,             /* T_SUBTRACTION  */
-  YYSYMBOL_T_CONCATENATION = 24,           /* T_CONCATENATION  */
-  YYSYMBOL_T_MULTIPLICATION = 25,          /* T_MULTIPLICATION  */
-  YYSYMBOL_T_DIVISON = 26,                 /* T_DIVISON  */
-  YYSYMBOL_T_POSITIVELY = 27,              /* T_POSITIVELY  */
-  YYSYMBOL_T_NEGATIVELY = 28,              /* T_NEGATIVELY  */
-  YYSYMBOL_T_NOT = 29,                     /* T_NOT  */
-  YYSYMBOL_T_IDENTIFIER = 30,              /* T_IDENTIFIER  */
-  YYSYMBOL_T_STRING = 31,                  /* T_STRING  */
-  YYSYMBOL_T_NUMBER = 32,                  /* T_NUMBER  */
-  YYSYMBOL_T_NEW_SENTENCE = 33,            /* T_NEW_SENTENCE  */
-  YYSYMBOL_YYACCEPT = 34,                  /* $accept  */
-  YYSYMBOL_ElegantConversation = 35,       /* ElegantConversation  */
-  YYSYMBOL_Greeting = 36,                  /* Greeting  */
-  YYSYMBOL_SentenceList = 37,              /* SentenceList  */
-  YYSYMBOL_Sentence = 38,                  /* Sentence  */
-  YYSYMBOL_Declare = 39,                   /* Declare  */
-  YYSYMBOL_Type = 40,                      /* Type  */
-  YYSYMBOL_OptionalValue = 41,             /* OptionalValue  */
-  YYSYMBOL_Assign = 42,                    /* Assign  */
-  YYSYMBOL_Conditional = 43,               /* Conditional  */
-  YYSYMBOL_OptionalElse = 44,              /* OptionalElse  */
-  YYSYMBOL_Loop = 45,                      /* Loop  */
-  YYSYMBOL_Block = 46,                     /* Block  */
-  YYSYMBOL_BooleanExpression = 47,         /* BooleanExpression  */
-  YYSYMBOL_BooleanClause = 48,             /* BooleanClause  */
-  YYSYMBOL_RelationalExpression = 49,      /* RelationalExpression  */
-  YYSYMBOL_RelationalOp = 50,              /* RelationalOp  */
-  YYSYMBOL_Expression = 51,                /* Expression  */
-  YYSYMBOL_ArithmeticAddSubConcatOp = 52,  /* ArithmeticAddSubConcatOp  */
-  YYSYMBOL_Term = 53,                      /* Term  */
-  YYSYMBOL_ArithmeticMultDivOp = 54,       /* ArithmeticMultDivOp  */
-  YYSYMBOL_Factor = 55,                    /* Factor  */
-  YYSYMBOL_UnaryOp = 56                    /* UnaryOp  */
+  YYSYMBOL_T_SOLICITATION = 15,            /* T_SOLICITATION  */
+  YYSYMBOL_T_DISPLAY = 16,                 /* T_DISPLAY  */
+  YYSYMBOL_T_FIRSTLY = 17,                 /* T_FIRSTLY  */
+  YYSYMBOL_T_CONCLUSION = 18,              /* T_CONCLUSION  */
+  YYSYMBOL_T_OR = 19,                      /* T_OR  */
+  YYSYMBOL_T_AND = 20,                     /* T_AND  */
+  YYSYMBOL_T_EQUIVALENCE = 21,             /* T_EQUIVALENCE  */
+  YYSYMBOL_T_DIFFERENCE = 22,              /* T_DIFFERENCE  */
+  YYSYMBOL_T_GREATER = 23,                 /* T_GREATER  */
+  YYSYMBOL_T_LESSER = 24,                  /* T_LESSER  */
+  YYSYMBOL_T_ADDITION = 25,                /* T_ADDITION  */
+  YYSYMBOL_T_SUBTRACTION = 26,             /* T_SUBTRACTION  */
+  YYSYMBOL_T_CONCATENATION = 27,           /* T_CONCATENATION  */
+  YYSYMBOL_T_MULTIPLICATION = 28,          /* T_MULTIPLICATION  */
+  YYSYMBOL_T_DIVISON = 29,                 /* T_DIVISON  */
+  YYSYMBOL_T_POSITIVELY = 30,              /* T_POSITIVELY  */
+  YYSYMBOL_T_NEGATIVELY = 31,              /* T_NEGATIVELY  */
+  YYSYMBOL_T_NOT = 32,                     /* T_NOT  */
+  YYSYMBOL_T_IDENTIFIER = 33,              /* T_IDENTIFIER  */
+  YYSYMBOL_T_STRING = 34,                  /* T_STRING  */
+  YYSYMBOL_T_NUMBER = 35,                  /* T_NUMBER  */
+  YYSYMBOL_T_NEW_SENTENCE = 36,            /* T_NEW_SENTENCE  */
+  YYSYMBOL_YYACCEPT = 37,                  /* $accept  */
+  YYSYMBOL_ElegantConversation = 38,       /* ElegantConversation  */
+  YYSYMBOL_Greeting = 39,                  /* Greeting  */
+  YYSYMBOL_SentenceList = 40,              /* SentenceList  */
+  YYSYMBOL_Sentence = 41,                  /* Sentence  */
+  YYSYMBOL_Declare = 42,                   /* Declare  */
+  YYSYMBOL_Identifier = 43,                /* Identifier  */
+  YYSYMBOL_Type = 44,                      /* Type  */
+  YYSYMBOL_OptionalValue = 45,             /* OptionalValue  */
+  YYSYMBOL_Assign = 46,                    /* Assign  */
+  YYSYMBOL_Conditional = 47,               /* Conditional  */
+  YYSYMBOL_OptionalElse = 48,              /* OptionalElse  */
+  YYSYMBOL_Loop = 49,                      /* Loop  */
+  YYSYMBOL_Solicit = 50,                   /* Solicit  */
+  YYSYMBOL_Display = 51,                   /* Display  */
+  YYSYMBOL_Block = 52,                     /* Block  */
+  YYSYMBOL_BlockSentenceList = 53,         /* BlockSentenceList  */
+  YYSYMBOL_BooleanExpression = 54,         /* BooleanExpression  */
+  YYSYMBOL_BooleanClause = 55,             /* BooleanClause  */
+  YYSYMBOL_RelationalExpression = 56,      /* RelationalExpression  */
+  YYSYMBOL_RelationalOp = 57,              /* RelationalOp  */
+  YYSYMBOL_Expression = 58,                /* Expression  */
+  YYSYMBOL_ArithmeticAddSubConcatOp = 59,  /* ArithmeticAddSubConcatOp  */
+  YYSYMBOL_Term = 60,                      /* Term  */
+  YYSYMBOL_ArithmeticMultDivOp = 61,       /* ArithmeticMultDivOp  */
+  YYSYMBOL_Factor = 62,                    /* Factor  */
+  YYSYMBOL_UnaryOp = 63                    /* UnaryOp  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -488,19 +534,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   64
+#define YYLAST   76
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  34
+#define YYNTOKENS  37
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  23
+#define YYNNTS  27
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  45
+#define YYNRULES  54
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  73
+#define YYNSTATES  86
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   288
+#define YYMAXUTOK   291
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -542,18 +588,20 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33
+      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
+      35,    36
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_int16 yyrline[] =
 {
-       0,    19,    19,    21,    23,    24,    26,    27,    28,    29,
-      31,    33,    34,    36,    37,    39,    41,    43,    44,    46,
-      48,    50,    51,    53,    54,    56,    57,    59,    60,    61,
-      63,    64,    66,    67,    68,    70,    71,    73,    74,    76,
-      77,    78,    79,    81,    82,    83
+       0,    58,    58,    73,    75,    83,    88,    92,    93,    94,
+      95,    96,    97,    99,   121,   138,   141,   145,   148,   152,
+     172,   195,   198,   202,   222,   241,   260,   275,   278,   288,
+     291,   311,   314,   334,   337,   357,   360,   363,   366,   370,
+     373,   393,   396,   399,   403,   406,   426,   429,   433,   449,
+     465,   483,   485,   488,   491
 };
 #endif
 
@@ -572,16 +620,18 @@ static const char *const yytname[] =
   "\"end of file\"", "error", "\"invalid token\"", "T_GREETINGS",
   "T_INTRODUCE", "T_AS", "T_INTEGER_TYPE", "T_STRING_TYPE",
   "T_DECLARE_VALUE", "T_ASSIGN", "T_ASSIGN_VALUE", "T_CONDITIONAL",
-  "T_HOLDS_TRUE", "T_OTHERWISE", "T_WHILST", "T_FIRSTLY", "T_CONCLUSION",
-  "T_OR", "T_AND", "T_EQUIVALENCE", "T_GREATER", "T_LESSER", "T_ADDITION",
-  "T_SUBTRACTION", "T_CONCATENATION", "T_MULTIPLICATION", "T_DIVISON",
-  "T_POSITIVELY", "T_NEGATIVELY", "T_NOT", "T_IDENTIFIER", "T_STRING",
-  "T_NUMBER", "T_NEW_SENTENCE", "$accept", "ElegantConversation",
-  "Greeting", "SentenceList", "Sentence", "Declare", "Type",
+  "T_HOLDS_TRUE", "T_OTHERWISE", "T_WHILST", "T_SOLICITATION", "T_DISPLAY",
+  "T_FIRSTLY", "T_CONCLUSION", "T_OR", "T_AND", "T_EQUIVALENCE",
+  "T_DIFFERENCE", "T_GREATER", "T_LESSER", "T_ADDITION", "T_SUBTRACTION",
+  "T_CONCATENATION", "T_MULTIPLICATION", "T_DIVISON", "T_POSITIVELY",
+  "T_NEGATIVELY", "T_NOT", "T_IDENTIFIER", "T_STRING", "T_NUMBER",
+  "T_NEW_SENTENCE", "$accept", "ElegantConversation", "Greeting",
+  "SentenceList", "Sentence", "Declare", "Identifier", "Type",
   "OptionalValue", "Assign", "Conditional", "OptionalElse", "Loop",
-  "Block", "BooleanExpression", "BooleanClause", "RelationalExpression",
-  "RelationalOp", "Expression", "ArithmeticAddSubConcatOp", "Term",
-  "ArithmeticMultDivOp", "Factor", "UnaryOp", YY_NULLPTR
+  "Solicit", "Display", "Block", "BlockSentenceList", "BooleanExpression",
+  "BooleanClause", "RelationalExpression", "RelationalOp", "Expression",
+  "ArithmeticAddSubConcatOp", "Term", "ArithmeticMultDivOp", "Factor",
+  "UnaryOp", YY_NULLPTR
 };
 
 static const char *
@@ -591,7 +641,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-49)
+#define YYPACT_NINF (-56)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -605,14 +655,15 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       2,   -24,    22,   -49,   -49,   -49,     3,     7,    14,    -3,
-      -3,   -49,   -49,   -49,   -49,   -49,    28,    32,   -49,   -49,
-     -49,   -49,   -49,   -49,    -6,    25,    11,    12,    13,   -49,
-      -3,     4,    34,    -3,    30,    -3,    -3,   -49,   -49,   -49,
-      -3,   -49,   -49,   -49,    -3,   -49,   -49,    -3,   -49,    30,
-     -49,   -49,    38,   -13,   -49,    35,    25,    11,    12,    13,
-     -49,   -49,    -3,    16,   -49,    -1,    30,   -49,    33,   -49,
-      18,   -49,   -49
+      12,   -15,    29,    26,   -56,   -56,   -56,     3,     3,    21,
+      21,     3,    21,    34,   -56,   -56,   -56,   -56,   -56,   -56,
+     -56,   -56,    39,    37,   -56,   -56,   -56,   -56,   -56,   -56,
+      -5,    19,    36,    41,   -19,   -56,    21,     0,    10,   -14,
+     -56,    27,    21,    44,    21,    21,   -56,   -56,   -56,   -56,
+      21,   -56,   -56,   -56,    21,   -56,   -56,    21,   -56,    44,
+     -56,   -56,   -56,   -56,    54,   -11,   -56,    50,    19,    36,
+      41,   -19,   -56,   -56,    21,    33,   -56,     2,    44,   -56,
+      51,   -56,    35,   -56,   -56,   -56
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -620,30 +671,31 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     4,     3,     1,     2,     0,     0,     0,
-       0,     5,     6,     7,     8,     9,     0,     0,    43,    44,
-      45,    41,    40,    39,     0,    21,    23,    25,    30,    35,
-       0,     0,     0,     0,     0,     0,     0,    27,    28,    29,
-       0,    32,    33,    34,     0,    37,    38,     0,    42,     0,
-      11,    12,    13,     0,     4,    17,    22,    24,    26,    31,
-      36,    19,     0,     0,    15,     0,     0,    16,    14,    10,
-       0,    18,    20
+       0,     0,     0,     0,     3,     1,     6,     0,     0,     0,
+       0,     0,     0,     2,     5,     7,     8,     9,    10,    11,
+      12,    14,     0,     0,    52,    53,    54,    49,    48,    51,
+       0,    29,    31,    33,    39,    44,     0,     0,     0,     0,
+       4,     0,     0,     0,     0,     0,    35,    36,    37,    38,
+       0,    41,    42,    43,     0,    46,    47,     0,    50,     0,
+      24,    25,    15,    16,    17,     0,    27,    21,    30,    32,
+      34,    40,    45,    23,     0,     0,    19,     0,     0,    20,
+      18,    13,     0,    28,    22,    26
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -49,   -49,   -49,    -7,   -49,   -49,   -49,   -49,   -49,   -49,
-     -49,   -49,   -48,   -10,    19,    17,   -49,    15,   -49,    20,
-     -49,   -28,   -49
+     -56,   -56,   -56,   -56,   -12,   -56,    20,   -56,   -56,   -56,
+     -56,   -56,   -56,   -56,   -56,   -55,   -56,   -10,    28,    30,
+     -56,    23,   -56,    22,   -56,   -33,   -56
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     2,     3,     6,    11,    12,    52,    63,    13,    14,
-      67,    15,    55,    24,    25,    26,    40,    27,    44,    28,
-      47,    29,    30
+       0,     2,     3,    13,    14,    15,    29,    64,    75,    16,
+      17,    79,    18,    19,    20,    67,    77,    30,    31,    32,
+      50,    33,    54,    34,    57,    35,    36
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -651,58 +703,63 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      31,    61,    48,     7,    35,     1,    34,     7,     8,     4,
-       9,    35,     8,    10,     9,    70,    49,    10,    71,    60,
-      64,    35,     5,    53,    18,    19,    20,    21,    22,    23,
-      37,    38,    39,    32,    41,    42,    43,    16,    45,    46,
-      50,    51,    33,    36,    17,    54,    62,    65,    66,    69,
-      35,    72,    68,    57,    56,    58,     0,     0,     0,     0,
-       0,     0,     0,     0,    59
+      37,    40,    39,    58,    73,    44,     7,    43,    44,    55,
+      56,     8,    59,     9,    44,     1,    10,    11,    12,    44,
+      82,     4,    61,    84,    72,    76,     6,    22,    23,     5,
+       7,    38,    65,    62,    63,     8,    21,     9,     7,    45,
+      10,    11,    12,     8,    41,     9,    60,    42,    10,    11,
+      12,    24,    25,    26,    21,    27,    28,    46,    47,    48,
+      49,    66,    74,    78,    80,    83,    51,    52,    53,    81,
+      44,    85,    68,    70,     0,    69,    71
 };
 
 static const yytype_int8 yycheck[] =
 {
-      10,    49,    30,     4,    17,     3,    12,     4,     9,    33,
-      11,    17,     9,    14,    11,    16,    12,    14,    66,    47,
-      33,    17,     0,    33,    27,    28,    29,    30,    31,    32,
-      19,    20,    21,     5,    22,    23,    24,    30,    25,    26,
-       6,     7,    10,    18,    30,    15,     8,    54,    13,    33,
-      17,    33,    62,    36,    35,    40,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    44
+      10,    13,    12,    36,    59,    19,     4,    12,    19,    28,
+      29,     9,    12,    11,    19,     3,    14,    15,    16,    19,
+      18,    36,    36,    78,    57,    36,     0,     7,     8,     0,
+       4,    11,    42,     6,     7,     9,    33,    11,     4,    20,
+      14,    15,    16,     9,     5,    11,    36,    10,    14,    15,
+      16,    30,    31,    32,    33,    34,    35,    21,    22,    23,
+      24,    17,     8,    13,    74,    77,    25,    26,    27,    36,
+      19,    36,    44,    50,    -1,    45,    54
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,    35,    36,    33,     0,    37,     4,     9,    11,
-      14,    38,    39,    42,    43,    45,    30,    30,    27,    28,
-      29,    30,    31,    32,    47,    48,    49,    51,    53,    55,
-      56,    47,     5,    10,    12,    17,    18,    19,    20,    21,
-      50,    22,    23,    24,    52,    25,    26,    54,    55,    12,
-       6,     7,    40,    47,    15,    46,    48,    49,    51,    53,
-      55,    46,     8,    41,    33,    37,    13,    44,    47,    33,
-      16,    46,    33
+       0,     3,    38,    39,    36,     0,     0,     4,     9,    11,
+      14,    15,    16,    40,    41,    42,    46,    47,    49,    50,
+      51,    33,    43,    43,    30,    31,    32,    34,    35,    43,
+      54,    55,    56,    58,    60,    62,    63,    54,    43,    54,
+      41,     5,    10,    12,    19,    20,    21,    22,    23,    24,
+      57,    25,    26,    27,    59,    28,    29,    61,    62,    12,
+      36,    36,     6,     7,    44,    54,    17,    52,    55,    56,
+      58,    60,    62,    52,     8,    45,    36,    53,    13,    48,
+      54,    36,    18,    41,    52,    36
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    34,    35,    36,    37,    37,    38,    38,    38,    38,
-      39,    40,    40,    41,    41,    42,    43,    44,    44,    45,
-      46,    47,    47,    48,    48,    49,    49,    50,    50,    50,
-      51,    51,    52,    52,    52,    53,    53,    54,    54,    55,
-      55,    55,    55,    56,    56,    56
+       0,    37,    38,    39,    40,    40,    40,    41,    41,    41,
+      41,    41,    41,    42,    43,    44,    44,    45,    45,    46,
+      47,    48,    48,    49,    50,    51,    52,    53,    53,    54,
+      54,    55,    55,    56,    56,    57,    57,    57,    57,    58,
+      58,    59,    59,    59,    60,    60,    61,    61,    62,    62,
+      62,    62,    63,    63,    63
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     2,     0,     2,     1,     1,     1,     1,
-       6,     1,     1,     0,     2,     5,     5,     0,     2,     4,
-       4,     1,     3,     1,     3,     1,     3,     1,     1,     1,
-       1,     3,     1,     1,     1,     1,     3,     1,     1,     1,
-       1,     1,     2,     1,     1,     1
+       0,     2,     2,     2,     2,     1,     1,     1,     1,     1,
+       1,     1,     1,     6,     1,     1,     1,     0,     2,     5,
+       5,     0,     2,     4,     3,     3,     4,     0,     2,     1,
+       3,     1,     3,     1,     3,     1,     1,     1,     1,     1,
+       3,     1,     1,     1,     1,     3,     1,     1,     1,     1,
+       2,     1,     1,     1,     1
 };
 
 
@@ -1165,8 +1222,636 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 2: /* ElegantConversation: Greeting SentenceList  */
+#line 58 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                           {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantConversation");
 
-#line 1170 "elegant_parser.tab.c"
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, yyvsp[0]);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    pRootNode = create_ast_node("ElegantConversation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pArgsTuple);
+}
+#line 1242 "elegant_parser.tab.c"
+    break;
+
+  case 4: /* SentenceList: SentenceList Sentence  */
+#line 75 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                    {
+    if (!PyList_Check(yyvsp[-1])) {
+        yyerror("Expected a list as the first argument");
+        yyval = NULL;
+    } else {
+        PyList_Append(yyvsp[-1], yyvsp[0]);
+    }
+}
+#line 1255 "elegant_parser.tab.c"
+    break;
+
+  case 5: /* SentenceList: Sentence  */
+#line 83 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                        {
+    PyObject *singleSentenceList = PyList_New(1);
+    PyList_SetItem(singleSentenceList, 0, yyvsp[0]); // $1 refers to the single Sentence node
+    yyval = singleSentenceList;
+}
+#line 1265 "elegant_parser.tab.c"
+    break;
+
+  case 6: /* SentenceList: $end  */
+#line 88 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                    {
+    yyval = PyList_New(0); // Base case: an empty list
+}
+#line 1273 "elegant_parser.tab.c"
+    break;
+
+  case 13: /* Declare: T_INTRODUCE Identifier T_AS Type OptionalValue T_NEW_SENTENCE  */
+#line 99 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                        {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = yyvsp[-2];
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-4]);
+    if (yyvsp[-1] != 0) {
+        PyList_Append(pChildren, yyvsp[-1]);
+    }
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantVariableDeclaration", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1299 "elegant_parser.tab.c"
+    break;
+
+  case 14: /* Identifier: T_IDENTIFIER  */
+#line 121 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString(yytext);
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantIdentifier", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1320 "elegant_parser.tab.c"
+    break;
+
+  case 15: /* Type: T_INTEGER_TYPE  */
+#line 138 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                        {
+    yyval = PyUnicode_FromString("INT");
+}
+#line 1328 "elegant_parser.tab.c"
+    break;
+
+  case 16: /* Type: T_STRING_TYPE  */
+#line 141 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                    {
+    yyval = PyUnicode_FromString("STRING");
+}
+#line 1336 "elegant_parser.tab.c"
+    break;
+
+  case 17: /* OptionalValue: %empty  */
+#line 145 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    yyval = 0;
+}
+#line 1344 "elegant_parser.tab.c"
+    break;
+
+  case 18: /* OptionalValue: T_DECLARE_VALUE BooleanExpression  */
+#line 148 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                {
+    yyval = yyvsp[0];
+}
+#line 1352 "elegant_parser.tab.c"
+    break;
+
+  case 19: /* Assign: T_ASSIGN Identifier T_ASSIGN_VALUE BooleanExpression T_NEW_SENTENCE  */
+#line 152 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                            {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantAssignment");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-3]);
+    PyList_Append(pChildren, yyvsp[-1]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantAssignment", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1376 "elegant_parser.tab.c"
+    break;
+
+  case 20: /* Conditional: T_CONDITIONAL BooleanExpression T_HOLDS_TRUE Block OptionalElse  */
+#line 172 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                                {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantConditional");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-3]);
+    PyList_Append(pChildren, yyvsp[-1]);
+    if (yyvsp[0] != 0) {
+        PyList_Append(pChildren, yyvsp[0]);
+    }
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantConditional", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1403 "elegant_parser.tab.c"
+    break;
+
+  case 21: /* OptionalElse: %empty  */
+#line 195 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    yyval = 0;
+}
+#line 1411 "elegant_parser.tab.c"
+    break;
+
+  case 22: /* OptionalElse: T_OTHERWISE Block  */
+#line 198 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                {
+    yyval = yyvsp[0];
+}
+#line 1419 "elegant_parser.tab.c"
+    break;
+
+  case 23: /* Loop: T_WHILST BooleanExpression T_HOLDS_TRUE Block  */
+#line 202 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantLoop");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-2]);
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantLoop", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1443 "elegant_parser.tab.c"
+    break;
+
+  case 24: /* Solicit: T_SOLICITATION Identifier T_NEW_SENTENCE  */
+#line 222 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantSolicitation");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-1]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantSolicitation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1466 "elegant_parser.tab.c"
+    break;
+
+  case 25: /* Display: T_DISPLAY BooleanExpression T_NEW_SENTENCE  */
+#line 241 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantDisplay");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-1]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantDisplay", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1489 "elegant_parser.tab.c"
+    break;
+
+  case 26: /* Block: T_FIRSTLY BlockSentenceList T_CONCLUSION T_NEW_SENTENCE  */
+#line 260 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                 {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("ElegantBlock");
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, yyvsp[-2]);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantBlock", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pArgsTuple);
+}
+#line 1508 "elegant_parser.tab.c"
+    break;
+
+  case 27: /* BlockSentenceList: %empty  */
+#line 275 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                {
+    yyval = PyList_New(0); // Base case: an empty list
+}
+#line 1516 "elegant_parser.tab.c"
+    break;
+
+  case 28: /* BlockSentenceList: BlockSentenceList Sentence  */
+#line 278 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                         {
+    if (!PyList_Check(yyvsp[-1])) {
+        yyerror("Expected a list as the first argument");
+        yyval = NULL;
+    } else {
+        PyList_Append(yyvsp[-1], yyvsp[0]);
+        yyval = yyvsp[-1];    // Assign the modified list back to $$
+    }
+}
+#line 1530 "elegant_parser.tab.c"
+    break;
+
+  case 29: /* BooleanExpression: BooleanClause  */
+#line 288 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                    {
+    yyval = yyvsp[0];
+}
+#line 1538 "elegant_parser.tab.c"
+    break;
+
+  case 30: /* BooleanExpression: BooleanExpression T_OR BooleanClause  */
+#line 291 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                        {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("or");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-2]);
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1562 "elegant_parser.tab.c"
+    break;
+
+  case 31: /* BooleanClause: RelationalExpression  */
+#line 311 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                    {
+    yyval = yyvsp[0];
+}
+#line 1570 "elegant_parser.tab.c"
+    break;
+
+  case 32: /* BooleanClause: BooleanClause T_AND RelationalExpression  */
+#line 314 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                        {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString("and");
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-2]);
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1594 "elegant_parser.tab.c"
+    break;
+
+  case 33: /* RelationalExpression: Expression  */
+#line 334 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                    {
+    yyval = yyvsp[0];
+}
+#line 1602 "elegant_parser.tab.c"
+    break;
+
+  case 34: /* RelationalExpression: RelationalExpression RelationalOp Expression  */
+#line 337 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = yyvsp[-1];
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-2]);
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1626 "elegant_parser.tab.c"
+    break;
+
+  case 35: /* RelationalOp: T_EQUIVALENCE  */
+#line 357 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1634 "elegant_parser.tab.c"
+    break;
+
+  case 36: /* RelationalOp: T_DIFFERENCE  */
+#line 360 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1642 "elegant_parser.tab.c"
+    break;
+
+  case 37: /* RelationalOp: T_GREATER  */
+#line 363 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1650 "elegant_parser.tab.c"
+    break;
+
+  case 38: /* RelationalOp: T_LESSER  */
+#line 366 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                            {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1658 "elegant_parser.tab.c"
+    break;
+
+  case 39: /* Expression: Term  */
+#line 370 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                    {
+    yyval = yyvsp[0];
+}
+#line 1666 "elegant_parser.tab.c"
+    break;
+
+  case 40: /* Expression: Expression ArithmeticAddSubConcatOp Term  */
+#line 373 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                        {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = yyvsp[-1];
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-2]);
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1690 "elegant_parser.tab.c"
+    break;
+
+  case 41: /* ArithmeticAddSubConcatOp: T_ADDITION  */
+#line 393 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                        {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1698 "elegant_parser.tab.c"
+    break;
+
+  case 42: /* ArithmeticAddSubConcatOp: T_SUBTRACTION  */
+#line 396 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                        {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1706 "elegant_parser.tab.c"
+    break;
+
+  case 43: /* ArithmeticAddSubConcatOp: T_CONCATENATION  */
+#line 399 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                            {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1714 "elegant_parser.tab.c"
+    break;
+
+  case 44: /* Term: Factor  */
+#line 403 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+    yyval = yyvsp[0];
+}
+#line 1722 "elegant_parser.tab.c"
+    break;
+
+  case 45: /* Term: Term ArithmeticMultDivOp Factor  */
+#line 406 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                        {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = yyvsp[-1];
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[-2]);
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1746 "elegant_parser.tab.c"
+    break;
+
+  case 46: /* ArithmeticMultDivOp: T_MULTIPLICATION  */
+#line 426 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                        {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1754 "elegant_parser.tab.c"
+    break;
+
+  case 47: /* ArithmeticMultDivOp: T_DIVISON  */
+#line 429 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1762 "elegant_parser.tab.c"
+    break;
+
+  case 48: /* Factor: T_NUMBER  */
+#line 433 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString(yytext);
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantIntegerValue", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1783 "elegant_parser.tab.c"
+    break;
+
+  case 49: /* Factor: T_STRING  */
+#line 449 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                    {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = PyUnicode_FromString(yytext);
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantStringValue", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1804 "elegant_parser.tab.c"
+    break;
+
+  case 50: /* Factor: UnaryOp Factor  */
+#line 465 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                        {
+    PyObject *pArgsList = PyList_New(0);
+    PyObject *pValue = yyvsp[-1];
+    PyObject *pChildren = PyList_New(0);
+
+    PyList_Append(pChildren, yyvsp[0]);
+
+    PyList_Append(pArgsList, pValue);
+    PyList_Append(pArgsList, pChildren);
+
+    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+    yyval = create_ast_node("ElegantUnaryOperation", pArgsTuple);
+    
+    Py_DECREF(pArgsList);
+    Py_DECREF(pValue);
+    Py_DECREF(pChildren);
+    Py_DECREF(pArgsTuple);
+}
+#line 1827 "elegant_parser.tab.c"
+    break;
+
+  case 52: /* UnaryOp: T_POSITIVELY  */
+#line 485 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                        {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1835 "elegant_parser.tab.c"
+    break;
+
+  case 53: /* UnaryOp: T_NEGATIVELY  */
+#line 488 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                        {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1843 "elegant_parser.tab.c"
+    break;
+
+  case 54: /* UnaryOp: T_NOT  */
+#line 491 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+    yyval = PyUnicode_FromString(yytext); 
+}
+#line 1851 "elegant_parser.tab.c"
+    break;
+
+
+#line 1855 "elegant_parser.tab.c"
 
       default: break;
     }
@@ -1359,20 +2044,77 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 85 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+#line 495 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
 
 
 void yyerror(const char *s) {
-    extern int yylval;   // Token value
     fprintf(stderr, "Error near token '%s': %s\n", yytext, s);
 }
 
-int main(void) {
-    extern int yy_flex_debug;
-    yy_flex_debug = 1;
-    if (yyparse()) {
+PyObject *create_instance(const char* module_name, const char* class_name, PyObject *args) {
+    PyObject *pName = PyUnicode_FromString(module_name);
+    PyObject *pModule = PyImport_Import(pName);
+    Py_DECREF(pName);
+    if (pModule == NULL) return NULL;
+
+    PyObject *pClass = PyObject_GetAttrString(pModule, class_name);
+    Py_DECREF(pModule);
+    if (pClass == NULL) return NULL;
+
+    PyObject *pInstance;
+    if (args != NULL) {
+        pInstance = PyObject_CallObject(pClass, args);
+    } else {
+        pInstance = PyObject_CallObject(pClass, NULL);
+    }
+    Py_DECREF(pClass);
+    if (pInstance == NULL) {
+        PyErr_Print();
+        fprintf(stderr, "Failed to create instance of '%s'\n", class_name);
+        return NULL;
+    }
+
+    return pInstance;
+}
+
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
+        return 1;
+    }
+
+    FILE *file = fopen(argv[1], "r");
+    if (!file) {
+        perror(argv[1]);
+        return 1;
+    }
+
+    yyin = file;
+
+    Py_Initialize();
+
+    PyObject *pSymbolTable = create_instance("compiler.src.semantic.SymbolTable", "SymbolTable", NULL);
+
+    PyObject *pFilename = PyUnicode_FromString(argv[1]);
+    PyObject *pArgs = PyTuple_New(1);
+    PyTuple_SetItem(pArgs, 0, pFilename);
+    PyObject *pCodeGenerator = create_instance("compiler.src.codegen.CodeGenerator", "CodeGen", pArgs);
+    Py_DECREF(pArgs);
+    
+    if (yyparse() == 0 && pRootNode != NULL) {
+        PyObject_CallMethod(pRootNode, "evaluate", "OO", pSymbolTable, pCodeGenerator);
+    } else {
         printf("Error in parsing!\n");
         return 1;
     }
+
+    PyObject_CallMethod(pCodeGenerator, "create_file", NULL);
+
+    Py_XDECREF(pRootNode);
+    Py_XDECREF(pSymbolTable);
+    Py_XDECREF(pCodeGenerator);
+    Py_Finalize();
+    fclose(file);
     return 0;
 }
+
