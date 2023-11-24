@@ -223,9 +223,11 @@ class ElegantConditional(Node):
         code_generator.write_line(f"CMP EAX, False")
         code_generator.write_line(f"JE EXIT_{self.index}")
         self.children[1].evaluate(symbol_table, code_generator)
+        code_generator.write_line(f"JMP COND_EXIT_{self.index}")
         code_generator.write_line(f"EXIT_{self.index}:")
         if len(self.children) > 2:
             self.children[2].evaluate(symbol_table, code_generator)
+        code_generator.write_line(f"COND_EXIT_{self.index}:")
 
 
 class ElegantLoop(Node):
