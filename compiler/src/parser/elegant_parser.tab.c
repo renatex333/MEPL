@@ -82,23 +82,23 @@ extern FILE *yyin;
 
 PyObject *pRootNode = NULL;
 
-PyObject *create_ast_node(const char *node_type, PyObject *args) {
+PyObject *createElegantNode(const char *nodeType, PyObject *args) {
     static PyObject *pModule = NULL;
-    PyObject *pName = PyUnicode_FromString("compiler.src.semantic.AbstractSyntaxTreeNodes");
+    PyObject *pName = PyUnicode_FromString("compiler.src.semantic.ElegantAbstractSyntaxTreeNodes");
     if (!pModule) {
         pModule = PyImport_Import(pName);
         if (!pModule) {
             PyErr_Print();
-            fprintf(stderr, "Failed to load 'AbstractSyntaxTreeNodes' module\n");
+            fprintf(stderr, "Regrettably, the loading of the 'ElegantAbstractSyntaxTreeNodes' module was not met with success.\n");
             return NULL;
         }
     }
 
-    PyObject *pClass = PyObject_GetAttrString(pModule, node_type);
+    PyObject *pClass = PyObject_GetAttrString(pModule, nodeType);
     if (!pClass || !PyCallable_Check(pClass)) {
         if (PyErr_Occurred())
             PyErr_Print();
-        fprintf(stderr, "Failed to find class '%s'\n", node_type);
+        fprintf(stderr, "Unable to find the class '%s', much to our regret.\n", nodeType);
         Py_XDECREF(pClass);
         return NULL;
     }
@@ -107,7 +107,8 @@ PyObject *create_ast_node(const char *node_type, PyObject *args) {
     Py_DECREF(pClass);
     if (!pInstance) {
         PyErr_Print();
-        fprintf(stderr, "Failed to create instance of '%s'\n", node_type);
+        fprintf(stderr, "Unfortunately, creating an instance of '%s' was unsuccessful.\n", nodeType);
+
         return NULL;
     }
 
@@ -115,7 +116,7 @@ PyObject *create_ast_node(const char *node_type, PyObject *args) {
 }
 
 
-#line 119 "elegant_parser.tab.c"
+#line 120 "elegant_parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -596,12 +597,12 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    58,    58,    73,    75,    83,    88,    92,    93,    94,
-      95,    96,    97,    99,   121,   138,   141,   145,   148,   152,
-     172,   195,   198,   202,   222,   241,   260,   275,   278,   288,
-     291,   311,   314,   334,   337,   357,   360,   363,   366,   370,
-     373,   393,   396,   399,   403,   406,   426,   429,   433,   449,
-     465,   483,   485,   488,   491
+       0,    62,    62,    78,    81,    89,    94,    99,   100,   101,
+     102,   103,   104,   107,   130,   148,   151,   156,   159,   164,
+     185,   209,   212,   217,   238,   258,   278,   294,   297,   308,
+     311,   332,   335,   356,   359,   380,   383,   386,   389,   394,
+     397,   418,   421,   424,   429,   432,   453,   456,   461,   477,
+     493,   511,   514,   517,   520
 };
 #endif
 
@@ -1223,635 +1224,635 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* ElegantConversation: Greeting SentenceList  */
-#line 58 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                           {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantConversation");
+#line 62 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                          {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantConversation");
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, yyvsp[0]);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, yyvsp[0]);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    pRootNode = create_ast_node("ElegantConversation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pArgsTuple);
-}
-#line 1242 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        pRootNode = createElegantNode("ElegantConversation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1243 "elegant_parser.tab.c"
     break;
 
   case 4: /* SentenceList: SentenceList Sentence  */
-#line 75 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                    {
-    if (!PyList_Check(yyvsp[-1])) {
-        yyerror("Expected a list as the first argument");
-        yyval = NULL;
-    } else {
-        PyList_Append(yyvsp[-1], yyvsp[0]);
+#line 81 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                          {
+        if (!PyList_Check(yyvsp[-1])) {
+            yyerror("Anticipation was for a list to graciously present itself as the first argument.");
+            yyval = NULL;
+        } else {
+            PyList_Append(yyvsp[-1], yyvsp[0]);
+        }
     }
-}
-#line 1255 "elegant_parser.tab.c"
+#line 1256 "elegant_parser.tab.c"
     break;
 
   case 5: /* SentenceList: Sentence  */
-#line 83 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                        {
-    PyObject *singleSentenceList = PyList_New(1);
-    PyList_SetItem(singleSentenceList, 0, yyvsp[0]); // $1 refers to the single Sentence node
-    yyval = singleSentenceList;
-}
-#line 1265 "elegant_parser.tab.c"
+#line 89 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+               {
+        PyObject *singleSentenceList = PyList_New(1);
+        PyList_SetItem(singleSentenceList, 0, yyvsp[0]);
+        yyval = singleSentenceList;
+    }
+#line 1266 "elegant_parser.tab.c"
     break;
 
   case 6: /* SentenceList: $end  */
-#line 88 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                    {
-    yyval = PyList_New(0); // Base case: an empty list
-}
-#line 1273 "elegant_parser.tab.c"
+#line 94 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+            {
+        yyval = PyList_New(0);
+    }
+#line 1274 "elegant_parser.tab.c"
     break;
 
   case 13: /* Declare: T_INTRODUCE Identifier T_AS Type OptionalValue T_NEW_SENTENCE  */
-#line 99 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                                        {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = yyvsp[-2];
-    PyObject *pChildren = PyList_New(0);
+#line 107 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                  {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = yyvsp[-2];
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-4]);
-    if (yyvsp[-1] != 0) {
-        PyList_Append(pChildren, yyvsp[-1]);
+        PyList_Append(pChildren, yyvsp[-4]);
+        if (yyvsp[-1] != 0) {
+            PyList_Append(pChildren, yyvsp[-1]);
+        }
+
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
+
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantVariableDeclaration", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
     }
-
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
-
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantVariableDeclaration", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1299 "elegant_parser.tab.c"
+#line 1300 "elegant_parser.tab.c"
     break;
 
   case 14: /* Identifier: T_IDENTIFIER  */
-#line 121 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString(yytext);
-    PyObject *pChildren = PyList_New(0);
+#line 130 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                 {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString(yytext);
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantIdentifier", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1320 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantIdentifier", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1321 "elegant_parser.tab.c"
     break;
 
   case 15: /* Type: T_INTEGER_TYPE  */
-#line 138 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                        {
-    yyval = PyUnicode_FromString("INT");
-}
-#line 1328 "elegant_parser.tab.c"
+#line 148 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                   {
+        yyval = PyUnicode_FromString("INT");
+    }
+#line 1329 "elegant_parser.tab.c"
     break;
 
   case 16: /* Type: T_STRING_TYPE  */
-#line 141 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+#line 151 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
                     {
-    yyval = PyUnicode_FromString("STRING");
-}
-#line 1336 "elegant_parser.tab.c"
+        yyval = PyUnicode_FromString("STRING");
+    }
+#line 1337 "elegant_parser.tab.c"
     break;
 
   case 17: /* OptionalValue: %empty  */
-#line 145 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    yyval = 0;
-}
-#line 1344 "elegant_parser.tab.c"
+#line 156 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+        yyval = 0;
+    }
+#line 1345 "elegant_parser.tab.c"
     break;
 
   case 18: /* OptionalValue: T_DECLARE_VALUE BooleanExpression  */
-#line 148 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                {
-    yyval = yyvsp[0];
-}
-#line 1352 "elegant_parser.tab.c"
+#line 159 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                        {
+        yyval = yyvsp[0];
+    }
+#line 1353 "elegant_parser.tab.c"
     break;
 
   case 19: /* Assign: T_ASSIGN Identifier T_ASSIGN_VALUE BooleanExpression T_NEW_SENTENCE  */
-#line 152 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                                            {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantAssignment");
-    PyObject *pChildren = PyList_New(0);
+#line 164 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                        {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantAssignment");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-3]);
-    PyList_Append(pChildren, yyvsp[-1]);
+        PyList_Append(pChildren, yyvsp[-3]);
+        PyList_Append(pChildren, yyvsp[-1]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantAssignment", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1376 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantAssignment", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1377 "elegant_parser.tab.c"
     break;
 
   case 20: /* Conditional: T_CONDITIONAL BooleanExpression T_HOLDS_TRUE Block OptionalElse  */
-#line 172 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                                                {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantConditional");
-    PyObject *pChildren = PyList_New(0);
+#line 185 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                                    {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantConditional");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-3]);
-    PyList_Append(pChildren, yyvsp[-1]);
-    if (yyvsp[0] != 0) {
-        PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-3]);
+        PyList_Append(pChildren, yyvsp[-1]);
+        if (yyvsp[0] != 0) {
+            PyList_Append(pChildren, yyvsp[0]);
+        }
+
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
+
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantConditional", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
     }
-
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
-
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantConditional", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1403 "elegant_parser.tab.c"
+#line 1404 "elegant_parser.tab.c"
     break;
 
   case 21: /* OptionalElse: %empty  */
-#line 195 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    yyval = 0;
-}
-#line 1411 "elegant_parser.tab.c"
+#line 209 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+        yyval = 0;
+    }
+#line 1412 "elegant_parser.tab.c"
     break;
 
   case 22: /* OptionalElse: T_OTHERWISE Block  */
-#line 198 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                {
-    yyval = yyvsp[0];
-}
-#line 1419 "elegant_parser.tab.c"
+#line 212 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                        {
+        yyval = yyvsp[0];
+    }
+#line 1420 "elegant_parser.tab.c"
     break;
 
   case 23: /* Loop: T_WHILST BooleanExpression T_HOLDS_TRUE Block  */
-#line 202 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                    {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantLoop");
-    PyObject *pChildren = PyList_New(0);
+#line 217 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                  {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantLoop");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-2]);
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-2]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantLoop", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1443 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantLoop", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1444 "elegant_parser.tab.c"
     break;
 
   case 24: /* Solicit: T_SOLICITATION Identifier T_NEW_SENTENCE  */
-#line 222 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                    {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantSolicitation");
-    PyObject *pChildren = PyList_New(0);
+#line 238 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                             {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantSolicitation");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-1]);
+        PyList_Append(pChildren, yyvsp[-1]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantSolicitation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1466 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantSolicitation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1467 "elegant_parser.tab.c"
     break;
 
   case 25: /* Display: T_DISPLAY BooleanExpression T_NEW_SENTENCE  */
-#line 241 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                    {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantDisplay");
-    PyObject *pChildren = PyList_New(0);
+#line 258 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                               {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantDisplay");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-1]);
+        PyList_Append(pChildren, yyvsp[-1]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantDisplay", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1489 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantDisplay", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1490 "elegant_parser.tab.c"
     break;
 
   case 26: /* Block: T_FIRSTLY BlockSentenceList T_CONCLUSION T_NEW_SENTENCE  */
-#line 260 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                                 {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("ElegantBlock");
+#line 278 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                            {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("ElegantBlock");
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, yyvsp[-2]);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, yyvsp[-2]);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantBlock", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pArgsTuple);
-}
-#line 1508 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantBlock", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1509 "elegant_parser.tab.c"
     break;
 
   case 27: /* BlockSentenceList: %empty  */
-#line 275 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                {
-    yyval = PyList_New(0); // Base case: an empty list
-}
-#line 1516 "elegant_parser.tab.c"
+#line 294 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+        yyval = PyList_New(0);
+    }
+#line 1517 "elegant_parser.tab.c"
     break;
 
   case 28: /* BlockSentenceList: BlockSentenceList Sentence  */
-#line 278 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                         {
-    if (!PyList_Check(yyvsp[-1])) {
-        yyerror("Expected a list as the first argument");
-        yyval = NULL;
-    } else {
-        PyList_Append(yyvsp[-1], yyvsp[0]);
-        yyval = yyvsp[-1];    // Assign the modified list back to $$
+#line 297 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                 {
+        if (!PyList_Check(yyvsp[-1])) {
+            yyerror("Anticipation was for a list to graciously present itself as the first argument.");
+            yyval = NULL;
+        } else {
+            PyList_Append(yyvsp[-1], yyvsp[0]);
+            yyval = yyvsp[-1];
+        }
     }
-}
-#line 1530 "elegant_parser.tab.c"
+#line 1531 "elegant_parser.tab.c"
     break;
 
   case 29: /* BooleanExpression: BooleanClause  */
-#line 288 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                    {
-    yyval = yyvsp[0];
-}
-#line 1538 "elegant_parser.tab.c"
+#line 308 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                  {
+        yyval = yyvsp[0];
+    }
+#line 1539 "elegant_parser.tab.c"
     break;
 
   case 30: /* BooleanExpression: BooleanExpression T_OR BooleanClause  */
-#line 291 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                        {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("or");
-    PyObject *pChildren = PyList_New(0);
+#line 311 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                           {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("or");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-2]);
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-2]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1562 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantBinaryOperation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1563 "elegant_parser.tab.c"
     break;
 
   case 31: /* BooleanClause: RelationalExpression  */
-#line 311 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                    {
-    yyval = yyvsp[0];
-}
-#line 1570 "elegant_parser.tab.c"
+#line 332 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                         {
+        yyval = yyvsp[0];
+    }
+#line 1571 "elegant_parser.tab.c"
     break;
 
   case 32: /* BooleanClause: BooleanClause T_AND RelationalExpression  */
-#line 314 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                        {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString("and");
-    PyObject *pChildren = PyList_New(0);
+#line 335 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                               {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString("and");
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-2]);
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-2]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1594 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantBinaryOperation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1595 "elegant_parser.tab.c"
     break;
 
   case 33: /* RelationalExpression: Expression  */
-#line 334 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                    {
-    yyval = yyvsp[0];
-}
-#line 1602 "elegant_parser.tab.c"
+#line 356 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+               {
+        yyval = yyvsp[0];
+    }
+#line 1603 "elegant_parser.tab.c"
     break;
 
   case 34: /* RelationalExpression: RelationalExpression RelationalOp Expression  */
-#line 337 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                                    {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = yyvsp[-1];
-    PyObject *pChildren = PyList_New(0);
+#line 359 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                                   {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = yyvsp[-1];
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-2]);
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-2]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1626 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantBinaryOperation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1627 "elegant_parser.tab.c"
     break;
 
   case 35: /* RelationalOp: T_EQUIVALENCE  */
-#line 357 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1634 "elegant_parser.tab.c"
+#line 380 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                  {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1635 "elegant_parser.tab.c"
     break;
 
   case 36: /* RelationalOp: T_DIFFERENCE  */
-#line 360 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1642 "elegant_parser.tab.c"
+#line 383 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                   {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1643 "elegant_parser.tab.c"
     break;
 
   case 37: /* RelationalOp: T_GREATER  */
-#line 363 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1650 "elegant_parser.tab.c"
+#line 386 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1651 "elegant_parser.tab.c"
     break;
 
   case 38: /* RelationalOp: T_LESSER  */
-#line 366 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                            {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1658 "elegant_parser.tab.c"
+#line 389 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+               {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1659 "elegant_parser.tab.c"
     break;
 
   case 39: /* Expression: Term  */
-#line 370 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                    {
-    yyval = yyvsp[0];
-}
-#line 1666 "elegant_parser.tab.c"
+#line 394 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+         {
+        yyval = yyvsp[0];
+    }
+#line 1667 "elegant_parser.tab.c"
     break;
 
   case 40: /* Expression: Expression ArithmeticAddSubConcatOp Term  */
-#line 373 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                                        {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = yyvsp[-1];
-    PyObject *pChildren = PyList_New(0);
+#line 397 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                               {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = yyvsp[-1];
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-2]);
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-2]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1690 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantBinaryOperation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1691 "elegant_parser.tab.c"
     break;
 
   case 41: /* ArithmeticAddSubConcatOp: T_ADDITION  */
-#line 393 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                        {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1698 "elegant_parser.tab.c"
+#line 418 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+               {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1699 "elegant_parser.tab.c"
     break;
 
   case 42: /* ArithmeticAddSubConcatOp: T_SUBTRACTION  */
-#line 396 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                        {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1706 "elegant_parser.tab.c"
+#line 421 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                    {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1707 "elegant_parser.tab.c"
     break;
 
   case 43: /* ArithmeticAddSubConcatOp: T_CONCATENATION  */
-#line 399 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                            {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1714 "elegant_parser.tab.c"
+#line 424 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                      {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1715 "elegant_parser.tab.c"
     break;
 
   case 44: /* Term: Factor  */
-#line 403 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                {
-    yyval = yyvsp[0];
-}
-#line 1722 "elegant_parser.tab.c"
+#line 429 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+           {
+        yyval = yyvsp[0];
+    }
+#line 1723 "elegant_parser.tab.c"
     break;
 
   case 45: /* Term: Term ArithmeticMultDivOp Factor  */
-#line 406 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                        {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = yyvsp[-1];
-    PyObject *pChildren = PyList_New(0);
+#line 432 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                                      {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = yyvsp[-1];
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[-2]);
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[-2]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantBinaryOperation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1746 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantBinaryOperation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1747 "elegant_parser.tab.c"
     break;
 
   case 46: /* ArithmeticMultDivOp: T_MULTIPLICATION  */
-#line 426 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                        {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1754 "elegant_parser.tab.c"
+#line 453 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                     {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1755 "elegant_parser.tab.c"
     break;
 
   case 47: /* ArithmeticMultDivOp: T_DIVISON  */
-#line 429 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                                {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1762 "elegant_parser.tab.c"
+#line 456 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1763 "elegant_parser.tab.c"
     break;
 
   case 48: /* Factor: T_NUMBER  */
-#line 433 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                    {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString(yytext);
-    PyObject *pChildren = PyList_New(0);
+#line 461 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+             {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString(yytext);
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantIntegerValue", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1783 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantIntegerValue", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1784 "elegant_parser.tab.c"
     break;
 
   case 49: /* Factor: T_STRING  */
-#line 449 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                    {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = PyUnicode_FromString(yytext);
-    PyObject *pChildren = PyList_New(0);
+#line 477 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+               {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = PyUnicode_FromString(yytext);
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantStringValue", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1804 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantStringValue", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1805 "elegant_parser.tab.c"
     break;
 
   case 50: /* Factor: UnaryOp Factor  */
-#line 465 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                        {
-    PyObject *pArgsList = PyList_New(0);
-    PyObject *pValue = yyvsp[-1];
-    PyObject *pChildren = PyList_New(0);
+#line 493 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                     {
+        PyObject *pArgsList = PyList_New(0);
+        PyObject *pValue = yyvsp[-1];
+        PyObject *pChildren = PyList_New(0);
 
-    PyList_Append(pChildren, yyvsp[0]);
+        PyList_Append(pChildren, yyvsp[0]);
 
-    PyList_Append(pArgsList, pValue);
-    PyList_Append(pArgsList, pChildren);
+        PyList_Append(pArgsList, pValue);
+        PyList_Append(pArgsList, pChildren);
 
-    PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
-    yyval = create_ast_node("ElegantUnaryOperation", pArgsTuple);
-    
-    Py_DECREF(pArgsList);
-    Py_DECREF(pValue);
-    Py_DECREF(pChildren);
-    Py_DECREF(pArgsTuple);
-}
-#line 1827 "elegant_parser.tab.c"
+        PyObject *pArgsTuple = PyList_AsTuple(pArgsList);
+        yyval = createElegantNode("ElegantUnaryOperation", pArgsTuple);
+        
+        Py_DECREF(pArgsList);
+        Py_DECREF(pValue);
+        Py_DECREF(pChildren);
+        Py_DECREF(pArgsTuple);
+    }
+#line 1828 "elegant_parser.tab.c"
     break;
 
   case 52: /* UnaryOp: T_POSITIVELY  */
-#line 485 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                        {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1835 "elegant_parser.tab.c"
+#line 514 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                 {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1836 "elegant_parser.tab.c"
     break;
 
   case 53: /* UnaryOp: T_NEGATIVELY  */
-#line 488 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                        {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1843 "elegant_parser.tab.c"
+#line 517 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+                   {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1844 "elegant_parser.tab.c"
     break;
 
   case 54: /* UnaryOp: T_NOT  */
-#line 491 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
-                {
-    yyval = PyUnicode_FromString(yytext); 
-}
-#line 1851 "elegant_parser.tab.c"
+#line 520 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+            {
+        yyval = PyUnicode_FromString(yytext); 
+    }
+#line 1852 "elegant_parser.tab.c"
     break;
 
 
-#line 1855 "elegant_parser.tab.c"
+#line 1856 "elegant_parser.tab.c"
 
       default: break;
     }
@@ -2044,20 +2045,20 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 495 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
+#line 524 "/home/renatex/Desktop/MEPL/compiler/src/parser/elegant_parser.y"
 
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error near token '%s': %s\n", yytext, s);
+    fprintf(stderr, "An error was encountered near the token '%s': %s\n", yytext, s);
 }
 
-PyObject *create_instance(const char* module_name, const char* class_name, PyObject *args) {
-    PyObject *pName = PyUnicode_FromString(module_name);
+PyObject *createInstance(const char* module, const char* class, PyObject *args) {
+    PyObject *pName = PyUnicode_FromString(module);
     PyObject *pModule = PyImport_Import(pName);
     Py_DECREF(pName);
     if (pModule == NULL) return NULL;
 
-    PyObject *pClass = PyObject_GetAttrString(pModule, class_name);
+    PyObject *pClass = PyObject_GetAttrString(pModule, class);
     Py_DECREF(pModule);
     if (pClass == NULL) return NULL;
 
@@ -2070,7 +2071,7 @@ PyObject *create_instance(const char* module_name, const char* class_name, PyObj
     Py_DECREF(pClass);
     if (pInstance == NULL) {
         PyErr_Print();
-        fprintf(stderr, "Failed to create instance of '%s'\n", class_name);
+        fprintf(stderr, "Unfortunately, creating an instance of '%s' was unsuccessful.\n", class);
         return NULL;
     }
 
@@ -2079,7 +2080,7 @@ PyObject *create_instance(const char* module_name, const char* class_name, PyObj
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
+        fprintf(stderr, "For usage, kindly proceed as: %s <filename>\n", argv[0]);
         return 1;
     }
 
@@ -2093,12 +2094,12 @@ int main(int argc, char *argv[]) {
 
     Py_Initialize();
 
-    PyObject *pSymbolTable = create_instance("compiler.src.semantic.SymbolTable", "SymbolTable", NULL);
+    PyObject *pSymbolTable = createInstance("compiler.src.semantic.ElegantSymbolTable", "SymbolTable", NULL);
 
     PyObject *pFilename = PyUnicode_FromString(argv[1]);
     PyObject *pArgs = PyTuple_New(1);
     PyTuple_SetItem(pArgs, 0, pFilename);
-    PyObject *pCodeGenerator = create_instance("compiler.src.codegen.CodeGenerator", "CodeGen", pArgs);
+    PyObject *pCodeGenerator = createInstance("compiler.src.codegen.ElegantCodeGenerator", "CodeGen", pArgs);
     Py_DECREF(pArgs);
     
     if (yyparse() == 0 && pRootNode != NULL) {
@@ -2117,4 +2118,3 @@ int main(int argc, char *argv[]) {
     fclose(file);
     return 0;
 }
-
