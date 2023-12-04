@@ -95,7 +95,7 @@ To bring your MEPL creations to life, follow these graceful steps:
 
         ./elegant_compiler <filename>
 
-Replacing `<filename>` with the name of your **.mepl** file.
+Replacing `<filename>` with the name of your **.mepl** file or the relative path to it.
 
 ### Rebuilding the Compiler
 
