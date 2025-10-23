@@ -18,4 +18,4 @@ fi
 cd $LEXER_DIR
 flex "$LEXER_DIR/elegant_lexer.l"
 cd $PARSER_DIR
-gcc -o "$PARSER_DIR/elegant_parser" "$PARSER_DIR/elegant_parser.tab.c" "$LEXER_DIR/lex.yy.c" -lfl -lpython3.10 $(python3.10-config --cflags --ldflags)
+gcc -o "$PARSER_DIR/elegant_parser" "$PARSER_DIR/elegant_parser.tab.c" "$LEXER_DIR/lex.yy.c" -lfl -lpython3.12 $(python3.12-config --cflags --ldflags)
