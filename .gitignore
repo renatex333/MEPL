@@ -158,3 +158,22 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# LLVM Backend Build Artifacts
+*.bc
+*.ll
+*.s
+*.o
+compiler/src/lexer/lex.yy.c
+compiler/src/parser/elegant_parser
+compiler/src/parser/elegant_parser.tab.c
+compiler/src/parser/elegant_parser.tab.h
+compiler/src/parser/elegant_parser_llvm
+compiler/src/parser/elegant_parser_llvm.tab.c
+compiler/src/parser/elegant_parser_llvm.tab.h
+compiler/src/ast/*.o
+compiler/src/codegen/*.o
+
+# Compiled MEPL executables
+compiler/examples/elegant_example
+compiler/examples/test_simple
