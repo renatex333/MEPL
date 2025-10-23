@@ -1,0 +1,3 @@
+#!/bin/bash
+# MEPL Compiler Builder with LLVM backend
+bash compiler/src/scripts/builder_llvm.sh
