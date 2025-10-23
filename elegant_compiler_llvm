@@ -1,0 +1,3 @@
+#!/bin/bash
+# MEPL Compiler with LLVM backend
+bash compiler/src/scripts/compiler_llvm.sh "$@"

@@ -1,0 +1,7 @@
+Greetings.
+I introduce x as an integer carrying the value of 10.
+I introduce y as an integer carrying the value of 5.
+I introduce result as an integer.
+Please, let result be given the value of x added to y.
+Kindly display the following expression: "The result is:".
+Kindly display the following expression: result.
